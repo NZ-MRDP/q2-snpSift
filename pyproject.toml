@@ -1,15 +1,13 @@
 [tool.poetry]
-name = "q2-bowtie2"
-description = ""
-version = "0.0.2"
-authors = ["John Chase <johnhchase@protonmail.com>"]
-packages = [{include = "q2_bowtie2"}]
+name = "q2-snpSift"
+description = "Qiime2 plugin for SnpSift"
+version = "0.0.0"
+authors = ["JOLI <joli@novozymes.com> HNKO <hnko@novozymes.com>"]
+packages = [{include = "q2_snpsift"}]
 
 [tool.poetry.dependencies]
 python = "^3.8.1"
-q2-types-genomics = {git = "https://github.com/bokulich-lab/q2-types-genomics.git", rev = "2022.11.0.dev0"}
-pandas = "1.5.2"
-numpy = "1.23.5"
+# q2-gatk = {git = "https://github.com/NZ-MRDP/q2-gatk"}
 
 [tool.poetry.group.dev.dependencies]
 coverage = "^7.1.0"
@@ -31,9 +29,9 @@ reportMissingImports = false
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-#This doesn't seem to work, I think it is a qiime issue though
+# This doesn't seem to work, I think it is a qiime issue though
 [tool.poetry.plugins."qiime2.plugins"]
-"q2-bowtie2" = "q2-bowtie2=q2_bowtie2.plugin_setup:plugin"
+"q2-snpSift" = "q2-snpSift=q2_snpsift.plugin_setup:plugin"
 
 [tool.black]
 line-length = 119
