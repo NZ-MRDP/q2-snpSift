@@ -1,4 +1,5 @@
 """SnpSift functions."""
+import os
 import subprocess
 from importlib import resources
 
@@ -12,6 +13,12 @@ def filter(input_vcf: VCFDirFormat, expression: str) -> VCFDirFormat:
     """filter.
 
     Usage: java -jar SnpSift.jar filter [options] 'expression' [input.vcf]
+
+    java -jar SnpSift.jar filter "( exists INDEL ) & (QUAL >= 20)" input.vcf
+    java -jar SnpSift.jar filter -a "(QUAL >= 20)" "( exists INDEL )" input.vcf
+
+    java -jar SnpSift.jar filter -r "(QUAL >= 20)" "( exists INDEL ) & (QUAL >= 20)" input.vcf
+    java -jar SnpSift.jar filter "( exists INDEL )" input.vcf
 
     Options:
     -a|--addFilter   : Add a string to FILTER VCF field if 'expression' is true. Default: '' (none)
@@ -41,6 +48,23 @@ def filter(input_vcf: VCFDirFormat, expression: str) -> VCFDirFormat:
 
 
 # TODO
-def extractFields():
-    """extractFields."""
+def extractFields(file: VCFDirFormat, fields: str, field_separator: str = "", empty_field: str = "") -> VCFDirFormat:
+    """extractFields.
+    Usage: java -jar SnpSift.jar extractFields [options] file.vcf fieldName1 fieldName2 ... fieldNameN > tabFile.txt
+
+    Options:
+        -s     : Same field separator. Default: '       '
+        -e     : Empty field. Default: ''
+
+    """
+    filtered_vcf = VCFDirFormat()
+    with resources.path(bin, "SnpSift.jar") as executable_path:
+        cmd = ["java", "-jar", executable_path, "extractFields"]
+        if field_separator != "":
+            cmd += ["-s", field_separator]
+        if empty_field != "":
+            cmd += ["-e", empty_field]
+        cmd.append(file)
+        cmd += fields.split()
+        subprocess.run(cmd, check=True, stdout=open("text.txt", "w"))
     pass
