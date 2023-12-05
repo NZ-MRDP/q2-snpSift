@@ -24,6 +24,22 @@ plugin.methods.register_function(
     input_descriptions={"input_vcf": "VCF input file"},
     parameter_descriptions={"expression": "filter expression"},
     output_descriptions={"filtered_vcf": "filtered VCF file"},
-    name="snpSift qiime plugin",
+    name="snpSift filter qiime plugin",
     description=("snpSift filter"),
+)
+
+plugin.methods.register_function(
+    function=q2_snpsift.extractFields,
+    inputs={"input_vcf": FeatureData[VCFFormat]},  # type: ignore
+    parameters={"fields": Str, "field_separator": Str, "empty_field": Str},
+    outputs=[("extracted_vcf", FeatureData[VCFFormat])],  # type: ignore # model.TextFileFormat
+    input_descriptions={"input_vcf": "VCF input file"},
+    parameter_descriptions={
+        "fields": "fields",
+        "field_separator": "field separator in input_vcf",
+        "empty_field": "rename empty fields",
+    },
+    output_descriptions={"extracted_vcf": "extracted fields from VCF file"},
+    name="snpSift extractFIelds qiime plugin",
+    description=("snpSift extractFields"),
 )
