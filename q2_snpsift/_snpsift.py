@@ -37,18 +37,21 @@ def filter(input_vcf: VCFDirFormat, expression: str) -> VCFDirFormat:
     # GET ARGUMENTS
     # RUN COMMANDS
     # RETURN FILE
+    filtered_vcf = VCFDirFormat()
     with resources.path(bin, "SnpSift.jar") as executable_path:
         cmd = ["java", "-jar", executable_path, "filter"]
         # cmd.append() # options
         cmd.append(expression)
         cmd.append("-f")
         cmd.append(input_vcf)
-        subprocess.run(cmd)
-    return
+        subprocess.run(cmd, check=True, stdout=open(os.path.join(str(filtered_vcf), "filtered.vcf"), "w"))
+    return filtered_vcf
 
 
 # TODO
-def extractFields(file: VCFDirFormat, fields: str, field_separator: str = "", empty_field: str = "") -> VCFDirFormat:
+def extractFields(
+    input_vcf: VCFDirFormat, fields: str, field_separator: str = "", empty_field: str = ""
+) -> VCFDirFormat:
     """extractFields.
     Usage: java -jar SnpSift.jar extractFields [options] file.vcf fieldName1 fieldName2 ... fieldNameN > tabFile.txt
 
@@ -57,14 +60,14 @@ def extractFields(file: VCFDirFormat, fields: str, field_separator: str = "", em
         -e     : Empty field. Default: ''
 
     """
-    filtered_vcf = VCFDirFormat()
+    extracted_vcf = VCFDirFormat()
     with resources.path(bin, "SnpSift.jar") as executable_path:
         cmd = ["java", "-jar", executable_path, "extractFields"]
         if field_separator != "":
             cmd += ["-s", field_separator]
         if empty_field != "":
             cmd += ["-e", empty_field]
-        cmd.append(file)
+        cmd.append(input_vcf)
         cmd += fields.split()
         subprocess.run(cmd, check=True, stdout=open("text.txt", "w"))
-    pass
+    return extracted_vcf
