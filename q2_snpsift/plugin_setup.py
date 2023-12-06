@@ -6,6 +6,7 @@ from qiime2.plugin import Str
 
 import q2_snpsift
 
+from ._format import VCFDirFormat
 from ._type import VCFFormat
 
 plugin = qiime2.plugin.Plugin(
@@ -43,3 +44,7 @@ plugin.methods.register_function(
     name="snpSift extractFIelds qiime plugin",
     description=("snpSift extractFields"),
 )
+
+plugin.register_formats(VCFDirFormat)
+plugin.register_semantic_type_to_format(FeatureData[VCFFormat], artifact_format=VCFDirFormat)  # type: ignore
+plugin.register_semantic_types(VCFFormat)

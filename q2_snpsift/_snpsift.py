@@ -2,6 +2,7 @@
 import os
 import subprocess
 from importlib import resources
+from typing import Any
 
 from q2_snpsift import bin
 
@@ -51,7 +52,7 @@ def filter(input_vcf: VCFDirFormat, expression: str) -> VCFDirFormat:
 # TODO
 def extractFields(
     input_vcf: VCFDirFormat, fields: str, field_separator: str = "", empty_field: str = ""
-) -> VCFDirFormat:
+) -> Any:  # Create a new format like ChromSnpTable # VCFDirFormat
     """extractFields.
     Usage: java -jar SnpSift.jar extractFields [options] file.vcf fieldName1 fieldName2 ... fieldNameN > tabFile.txt
 
