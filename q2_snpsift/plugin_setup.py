@@ -2,7 +2,7 @@
 
 import qiime2.plugin
 from q2_types.feature_data import FeatureData
-from qiime2.plugin import Str
+from qiime2.plugin import Bool, Choices, Str
 
 import q2_snpsift
 
@@ -20,10 +20,14 @@ plugin = qiime2.plugin.Plugin(
 plugin.methods.register_function(
     function=q2_snpsift.filter,
     inputs={"input_vcf": FeatureData[VCFFormat]},  # type: ignore
-    parameters={"expression": Str},
+    parameters={"expression": Str, "format": Str % Choices({"2", "3"})},  # "errmissing": Bool},
     outputs=[("filtered_vcf", FeatureData[VCFFormat])],  # type: ignore
     input_descriptions={"input_vcf": "VCF input file"},
-    parameter_descriptions={"expression": "filter expression"},
+    parameter_descriptions={
+        "expression": "filter expression",
+        "format": "SnpEff format version: {2, 3}"
+        # "errmissing": "Error is a field is missing",
+    },
     output_descriptions={"filtered_vcf": "filtered VCF file"},
     name="snpSift filter qiime plugin",
     description=("snpSift filter"),
