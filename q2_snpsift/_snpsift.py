@@ -61,6 +61,8 @@ def extractFields(
         -e     : Empty field. Default: ''
 
     """
+    # Extract everything?
+    ## THIS IS NOW BECOMING A TRANSFORMER!!!!!!
     extracted_vcf = VCFDirFormat()
     with resources.path(bin, "SnpSift.jar") as executable_path:
         cmd = ["java", "-jar", executable_path, "extractFields"]
@@ -72,3 +74,7 @@ def extractFields(
         cmd += fields.split()
         subprocess.run(cmd, check=True, stdout=open("text.txt", "w"))
     return extracted_vcf
+
+
+# def NZ_vcf_transformer(snpeff_vcf) -> simple_vcf:
+#     java -jar $snpsiftjar extractFields $snpeff_vcf "CHROM" "POS" "REF" "ALT" "AF" "QUAL" "DP" "QD" "EFF" > $simple_vcf

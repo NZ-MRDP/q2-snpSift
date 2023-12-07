@@ -5,6 +5,8 @@ import subprocess
 import qiime2.plugin.model as model
 from qiime2.plugin import ValidationError
 
+from ._type import VCFFormat
+
 
 class VCFFileFormat(model.TextFileFormat):
     """VCFFileFormat."""
@@ -14,6 +16,8 @@ class VCFFileFormat(model.TextFileFormat):
         result = subprocess.run(["gatk", "ValidateVariants", "-V", str(self)])
         if result.returncode != 0:
             raise ValidationError("This is not a valid VCF file.")
+
+    vcf = model.FileCollection(r".+\.vcf", format=VCFFormat)
 
 
 VCFDirFormat = model.SingleFileDirectoryFormat("VCFDirFormat", "vcf.vcf", VCFFileFormat)

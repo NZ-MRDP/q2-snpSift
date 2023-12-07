@@ -47,4 +47,4 @@ plugin.methods.register_function(
 
 plugin.register_formats(VCFDirFormat)
 plugin.register_semantic_type_to_format(FeatureData[VCFFormat], artifact_format=VCFDirFormat)  # type: ignore
-plugin.register_semantic_types(VCFFormat)
+# plugin.register_semantic_types(VCFFormat)
