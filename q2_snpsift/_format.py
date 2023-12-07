@@ -17,8 +17,6 @@ class VCFFileFormat(model.TextFileFormat):
         if result.returncode != 0:
             raise ValidationError("This is not a valid VCF file.")
 
-    vcf = model.FileCollection(r".+\.vcf", format=VCFFormat)
-
 
 VCFDirFormat = model.SingleFileDirectoryFormat("VCFDirFormat", "vcf.vcf", VCFFileFormat)
 

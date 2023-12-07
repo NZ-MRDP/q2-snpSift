@@ -2,7 +2,7 @@
 import os
 import subprocess
 from importlib import resources
-from typing import Any
+from typing import Any, Optional
 
 from q2_snpsift import bin
 
@@ -10,7 +10,11 @@ from ._format import VCFDirFormat
 
 
 # TODO
-def filter(input_vcf: VCFDirFormat, expression: str) -> VCFDirFormat:
+def filter(
+    input_vcf: VCFDirFormat,
+    expression: str,
+    format: Optional[str] = None,  # errmissing: str = "false",, galaxy: bool = False
+) -> VCFDirFormat:
     """filter.
 
     Usage: java -jar SnpSift.jar filter [options] 'expression' [input.vcf]
@@ -42,10 +46,17 @@ def filter(input_vcf: VCFDirFormat, expression: str) -> VCFDirFormat:
     with resources.path(bin, "SnpSift.jar") as executable_path:
         cmd = ["java", "-jar", executable_path, "filter"]
         # cmd.append() # options
+        # if errmissing:
+        #     cmd += ["--errMissing", "true"]
+        if format:
+            cmd.extend(["--format", format])
+        # if galaxy: # @LVN HOW TO?
+        #     cmd += ["--galaxy", galaxy]
         cmd.append(expression)
         cmd.append("-f")
-        cmd.append(input_vcf)
-        subprocess.run(cmd, check=True, stdout=open(os.path.join(str(filtered_vcf), "filtered.vcf"), "w"))
+        cmd.append(os.path.abspath(os.path.join(str(input_vcf), "*.vcf")))
+        subprocess.run(cmd, check=True, stdout=open(os.path.join(str(filtered_vcf), "vcf.vcf"), "w"))
+    print("CMD:", " ".join(cmd))
     return filtered_vcf
 
 
