@@ -14,11 +14,23 @@ class VCFFileFormat(model.TextFileFormat):
     # TODO: Test validation by qiime tools import a VCF file
     def _validate_(self, *args):
         result = subprocess.run(["gatk", "ValidateVariants", "-V", str(self)])
+        # make sure field_separators are equal to "\t"
+        # if not "\t", change it to "\t"
         if result.returncode != 0:
             raise ValidationError("This is not a valid VCF file.")
 
 
 VCFDirFormat = model.SingleFileDirectoryFormat("VCFDirFormat", "vcf.vcf", VCFFileFormat)
+
+
+class SNPFileFormat(model.TextFileFormat):
+    """SNPFileFormat."""
+
+    def _validate_(self, *args):
+        pass
+
+
+SNPDirFormat = model.SingleFileDirectoryFormat("SNPDirFormat", "snp.tsv", SNPFileFormat)
 
 
 class DictFileFormat(model.TextFileFormat):
