@@ -2,18 +2,19 @@
 import os
 import subprocess
 from importlib import resources
-from typing import Any, Optional
+from typing import Any
+
+import pandas as pd
 
 from q2_snpsift import bin
 
-from ._format import VCFDirFormat
+from ._format import SNPDirFormat, VCFDirFormat
 
 
 # TODO
 def filter(
     input_vcf: VCFDirFormat,
     expression: str,
-    format: Optional[str] = None,  # errmissing: str = "false",, galaxy: bool = False
 ) -> VCFDirFormat:
     """filter.
 
@@ -38,32 +39,20 @@ def filter(
     --format         : SnpEff format version: {2, 3}. Default: Auto
     --galaxy         : Used from Galaxy (expressions have been sanitized).
     """
-    # PATH_TO_JAR_FILE?
-    # GET ARGUMENTS
-    # RUN COMMANDS
-    # RETURN FILE
     filtered_vcf = VCFDirFormat()
     with resources.path(bin, "SnpSift.jar") as executable_path:
         cmd = ["java", "-jar", executable_path, "filter"]
-        # cmd.append() # options
-        # if errmissing:
-        #     cmd += ["--errMissing", "true"]
-        if format:
-            cmd.extend(["--format", format])
-        # if galaxy: # @LVN HOW TO?
-        #     cmd += ["--galaxy", galaxy]
         cmd.append(expression)
         cmd.append("-f")
-        cmd.append(os.path.abspath(os.path.join(str(input_vcf), "*.vcf")))
+        cmd.append(os.path.abspath(os.path.join(str(input_vcf), "vcf.vcf")))
         subprocess.run(cmd, check=True, stdout=open(os.path.join(str(filtered_vcf), "vcf.vcf"), "w"))
-    print("CMD:", " ".join(cmd))
     return filtered_vcf
 
 
 # TODO
 def extractFields(
     input_vcf: VCFDirFormat, fields: str, field_separator: str = "", empty_field: str = ""
-) -> Any:  # Create a new format like ChromSnpTable # VCFDirFormat
+) -> pd.DataFrame:  #  -> Metadata??:  # Create a new format like ChromSnpTable # VCFDirFormat
     """extractFields.
     Usage: java -jar SnpSift.jar extractFields [options] file.vcf fieldName1 fieldName2 ... fieldNameN > tabFile.txt
 
@@ -87,5 +76,25 @@ def extractFields(
     return extracted_vcf
 
 
+def filter_vcf(vcf_file: SNPDirFormat) -> SNPDirFormat:
+    """_summary_
+    Only returns XYZ columns
+
+    Args:
+        vcf_file (VCFDirFormat): _description_
+        fields (str): _description_
+
+    Returns:
+        pd.DataFrame: _description_
+    """
+    return vcf_file
+
+
 # def NZ_vcf_transformer(snpeff_vcf) -> simple_vcf:
 #     java -jar $snpsiftjar extractFields $snpeff_vcf "CHROM" "POS" "REF" "ALT" "AF" "QUAL" "DP" "QD" "EFF" > $simple_vcf
+
+
+# @transformer
+# def _transform_vcf(ff: VCF) -> pd.DataFrame:
+#  txt = extractFields()
+#  return_txt
