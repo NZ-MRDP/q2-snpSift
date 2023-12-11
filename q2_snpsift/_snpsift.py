@@ -2,7 +2,6 @@
 import os
 import subprocess
 from importlib import resources
-from typing import Any
 
 import pandas as pd
 
