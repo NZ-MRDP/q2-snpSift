@@ -20,6 +20,7 @@ plugin = qiime2.plugin.Plugin(
     package="q2_snpsift",
 )
 
+# TODO: Change VCFFormat to VCFIndex
 plugin.methods.register_function(
     function=q2_snpsift.filter,
     inputs={"input_vcf": FeatureData[VCFFormat]},  # type: ignore
