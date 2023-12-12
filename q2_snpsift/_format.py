@@ -5,11 +5,11 @@ import subprocess
 import qiime2.plugin.model as model
 from qiime2.plugin import ValidationError
 
-from ._type import VCFFormat
+# from ._type import VCFFormat
 
 
-class VCFFileFormat(model.TextFileFormat):
-    """VCFFileFormat."""
+class VariantFileFormat(model.TextFileFormat):
+    """VariantFileFormat."""
 
     # TODO: Test validation by qiime tools import a VCF file
     def _validate_(self, *args):
@@ -20,17 +20,19 @@ class VCFFileFormat(model.TextFileFormat):
             raise ValidationError("This is not a valid VCF file.")
 
 
-VCFDirFormat = model.SingleFileDirectoryFormat("VCFDirFormat", "vcf.vcf", VCFFileFormat)
+VariantDirFormat = model.SingleFileDirectoryFormat("VariantDirFormat", "vcf.vcf", VariantFileFormat)
 
 
-class SNPFileFormat(model.TextFileFormat):
-    """SNPFileFormat."""
+class VariantAnnotationFileFormat(model.TextFileFormat):
+    """VariantAnnotationFileFormat."""
 
     def _validate_(self, *args):
         pass
 
 
-SNPDirFormat = model.SingleFileDirectoryFormat("SNPDirFormat", "snp.tsv", SNPFileFormat)
+VariantAnnotationDirFormat = model.SingleFileDirectoryFormat(
+    "VariantAnnotationDirFormat", "snp.tsv", VariantAnnotationFileFormat
+)
 
 
 class DictFileFormat(model.TextFileFormat):
