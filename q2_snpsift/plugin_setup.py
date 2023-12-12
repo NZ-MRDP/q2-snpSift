@@ -4,13 +4,12 @@ import importlib
 
 import qiime2.plugin
 from q2_types.feature_data import FeatureData
-from q2_types.feature_table import FeatureTable, Frequency
-from qiime2.plugin import Bool, Choices, Str
+from qiime2.plugin import Str
 
 import q2_snpsift
 
-from ._format import SNPDirFormat, VCFDirFormat
-from ._type import SNPType, VCFFormat
+from ._format import VariantAnnotationDirFormat, VariantDirFormat
+from ._type import VariantAnnotationType, VariantType
 
 plugin = qiime2.plugin.Plugin(
     name="snpSift",
@@ -23,9 +22,9 @@ plugin = qiime2.plugin.Plugin(
 # TODO: Change VCFFormat to VCFIndex
 plugin.methods.register_function(
     function=q2_snpsift.filter,
-    inputs={"input_vcf": FeatureData[VCFFormat]},  # type: ignore
+    inputs={"input_vcf": FeatureData[VariantType]},  # type: ignore
     parameters={"expression": Str},  # , "format": Str % Choices({"2", "3"})},  # "errmissing": Bool},
-    outputs=[("filtered_vcf", FeatureData[VCFFormat])],  # type: ignore
+    outputs=[("filtered_vcf", FeatureData[VariantType])],  # type: ignore
     input_descriptions={"input_vcf": "VCF input file"},
     parameter_descriptions={
         "expression": "filter expression",
@@ -37,39 +36,21 @@ plugin.methods.register_function(
     description=("snpSift filter"),
 )
 
-# plugin.methods.register_function(
-#     function=q2_snpsift.extractFields,
-#     inputs={"input_vcf": FeatureData[VCFFormat]},  # type: ignore
-#     parameters={
-#         "fields": Str,
-#         "field_separator": Str,
-#         "empty_field": Str,
-#     },  # remove field_separator by changing it in _format.py
-#     outputs=[("extracted_vcf", FeatureData[VCFFormat])],  # type: ignore # model.TextFileFormat
-#     input_descriptions={"input_vcf": "VCF input file"},
-#     parameter_descriptions={
-#         "fields": "fields",
-#         "field_separator": "field separator in input_vcf",
-#         "empty_field": "rename empty fields",
-#     },
-#     output_descriptions={"extracted_vcf": "extracted fields from VCF file"},
-#     name="snpSift extractFIelds qiime plugin",
-#     description=("snpSift extractFields"),
-# )
-
 plugin.methods.register_function(
-    function=q2_snpsift.filter_vcf,
-    inputs={"vcf_file": FeatureData[VCFFormat]},  # type: ignore
+    function=q2_snpsift.extract_fields_from_snpeff_output,
+    inputs={"vcf_file": FeatureData[VariantType]},  # type: ignore
     parameters={},  # remove field_separator by changing it in _format.py
-    outputs=[("output_vcf", FeatureData[SNPType])],  # type: ignore # model.TextFileFormat
+    outputs=[("output_vcf", FeatureData[VariantAnnotationType])],  # type: ignore # model.TextFileFormat
     input_descriptions={"vcf_file": "VCF input file"},
     parameter_descriptions={},
     output_descriptions={"output_vcf": "extracted fields from VCF file"},
-    name="filter vcf qiime plugin",
-    description=("filter vcf"),
+    name="snpSift extractField",
+    description=("Run SnpSift extractFields on a SnpEff output."),
 )
 
-plugin.register_formats(SNPDirFormat, VCFDirFormat)
-plugin.register_semantic_type_to_format(FeatureData[VCFFormat], artifact_format=VCFDirFormat)  # type: ignore
-plugin.register_semantic_type_to_format(FeatureData[SNPType], artifact_format=SNPDirFormat)  # type: ignore
+plugin.register_formats(VariantAnnotationDirFormat, VariantDirFormat)
+plugin.register_semantic_type_to_format(FeatureData[VariantType], artifact_format=VariantDirFormat)  # type: ignore
+plugin.register_semantic_type_to_format(
+    FeatureData[VariantAnnotationType], artifact_format=VariantAnnotationDirFormat  # type: ignore
+)
 importlib.import_module("q2_snpsift._transformer")
