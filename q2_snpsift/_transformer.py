@@ -23,7 +23,30 @@ def extract_fields_from_vcf(vcf_file: VariantDirFormat) -> str:
         cmd.append(os.path.abspath(os.path.join(str(vcf_file), "vcf.vcf")))
         cmd.extend(["CHROM", "POS", "REF", "ALT", "AF", "QUAL", "DP", "QD", "EFF"])
         output = subprocess.run(cmd, stdout=subprocess.PIPE, text=True)
-    return str(output.stdout)
+        columns = [
+            "CHROM",
+            "POS",
+            "REF",
+            "ALT",
+            "AF",
+            "QUAL",
+            "DP",
+            "QD",
+            "EFF",
+            "Effect_Impact",
+            "Functional_Class",
+            "Codon_Change",
+            "Amino_Acid_change",
+            "Gene_Name",
+            "Transcript_BioType",
+            "Gene_Coding",
+            "Transcript_ID",
+            "Exon",
+            "ERRORS",
+            "WARNINGS",
+        ]
+        output_str = str(output.stdout).replace("(", "\t").replace("|", "\t").replace(")", "\t")
+    return "\t".join(columns) + "\n" + output_str.split("\n", 1)[1]
 
 
 @plugin.register_transformer
