@@ -2,20 +2,17 @@
 import os
 import subprocess
 from importlib import resources
-from typing import Any
-
-import pandas as pd
 
 from q2_snpsift import bin
 
-from ._format import SNPDirFormat, VCFDirFormat
+from ._format import VariantAnnotationDirFormat, VariantDirFormat
 
 
 # TODO
 def filter(
-    input_vcf: VCFDirFormat,
+    input_vcf: VariantDirFormat,
     expression: str,
-) -> VCFDirFormat:
+) -> VariantDirFormat:
     """filter.
 
     Usage: java -jar SnpSift.jar filter [options] 'expression' [input.vcf]
@@ -39,7 +36,7 @@ def filter(
     --format         : SnpEff format version: {2, 3}. Default: Auto
     --galaxy         : Used from Galaxy (expressions have been sanitized).
     """
-    filtered_vcf = VCFDirFormat()
+    filtered_vcf = VariantDirFormat()
     with resources.path(bin, "SnpSift.jar") as executable_path:
         cmd = ["java", "-jar", executable_path, "filter"]
         cmd.append(expression)
@@ -49,43 +46,14 @@ def filter(
     return filtered_vcf
 
 
-# TODO
-def extractFields(
-    input_vcf: VCFDirFormat, fields: str, field_separator: str = "", empty_field: str = ""
-) -> pd.DataFrame:  #  -> Metadata??:  # Create a new format like ChromSnpTable # VCFDirFormat
-    """extractFields.
-    Usage: java -jar SnpSift.jar extractFields [options] file.vcf fieldName1 fieldName2 ... fieldNameN > tabFile.txt
-
-    Options:
-        -s     : Same field separator. Default: '       '
-        -e     : Empty field. Default: ''
-
-    """
-    # Extract everything?
-    ## THIS IS NOW BECOMING A TRANSFORMER!!!!!!
-    extracted_vcf = VCFDirFormat()
-    with resources.path(bin, "SnpSift.jar") as executable_path:
-        cmd = ["java", "-jar", executable_path, "extractFields"]
-        if field_separator != "":
-            cmd += ["-s", field_separator]
-        if empty_field != "":
-            cmd += ["-e", empty_field]
-        cmd.append(input_vcf)
-        cmd += fields.split()
-        subprocess.run(cmd, check=True, stdout=open("text.txt", "w"))
-    return extracted_vcf
-
-
-def filter_vcf(vcf_file: SNPDirFormat) -> SNPDirFormat:
-    """_summary_
-    Only returns XYZ columns
+def extract_fields_from_snpeff_output(vcf_file: VariantAnnotationDirFormat) -> VariantAnnotationDirFormat:
+    """Run SnpSift extractFields on a SnpEff output.
 
     Args:
-        vcf_file (VCFDirFormat): _description_
-        fields (str): _description_
+        vcf_file (SNPDirFormat)
 
     Returns:
-        pd.DataFrame: _description_
+        SNPDirFormat
     """
     return vcf_file
 
