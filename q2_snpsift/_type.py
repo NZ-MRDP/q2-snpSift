@@ -3,7 +3,9 @@
 from q2_types.feature_data import FeatureData
 from qiime2.plugin import SemanticType
 
-VCFFormat = SemanticType("VCFFormat", variant_of=FeatureData.field["type"])
+VariantType = SemanticType("VariantType", variant_of=FeatureData.field["type"])
+
+VariantAnnotationType = SemanticType("VariantAnnotationType", variant_of=FeatureData.field["type"])
 
 DictFormat = SemanticType("DictFormat", variant_of=FeatureData.field["type"])
 
