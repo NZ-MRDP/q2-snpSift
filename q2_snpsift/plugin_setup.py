@@ -26,7 +26,7 @@ plugin.methods.register_function(
     outputs=[("filtered_vcf", FeatureData[VariantType])],  # type: ignore
     input_descriptions={"input_vcf": "VCF input file"},
     parameter_descriptions={
-        "expression": "filter expression",
+        "expression": "filter expression (e.g. '( QUAL >= 30 )')",
     },
     output_descriptions={"filtered_vcf": "filtered VCF file"},
     name="snpSift filter qiime plugin",
@@ -44,7 +44,7 @@ plugin.methods.register_function(
     name="snpSift extractField",
     description=(
         "Run SnpSift extractFields file.vcf CHROM, POS, REF, ALT, AF, QUAL, DP, QD, EFF on SnpEff output and expand"
-        + "EFF into separate columns."
+        + " EFF into separate columns."
     ),
 )
 
