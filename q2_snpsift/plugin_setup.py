@@ -19,17 +19,14 @@ plugin = qiime2.plugin.Plugin(
     package="q2_snpsift",
 )
 
-# TODO: Change VCFFormat to VCFIndex
 plugin.methods.register_function(
     function=q2_snpsift.filter,
     inputs={"input_vcf": FeatureData[VariantType]},  # type: ignore
-    parameters={"expression": Str},  # , "format": Str % Choices({"2", "3"})},  # "errmissing": Bool},
+    parameters={"expression": Str},
     outputs=[("filtered_vcf", FeatureData[VariantType])],  # type: ignore
     input_descriptions={"input_vcf": "VCF input file"},
     parameter_descriptions={
         "expression": "filter expression",
-        # "format": "SnpEff format version: {2, 3}"
-        # "errmissing": "Error is a field is missing",
     },
     output_descriptions={"filtered_vcf": "filtered VCF file"},
     name="snpSift filter qiime plugin",
@@ -39,13 +36,16 @@ plugin.methods.register_function(
 plugin.methods.register_function(
     function=q2_snpsift.extract_fields_from_snpeff_output,
     inputs={"vcf_file": FeatureData[VariantType]},  # type: ignore
-    parameters={},  # remove field_separator by changing it in _format.py
-    outputs=[("output_vcf", FeatureData[VariantAnnotationType])],  # type: ignore # model.TextFileFormat
+    parameters={},
+    outputs=[("output_vcf", FeatureData[VariantAnnotationType])],  # type: ignore
     input_descriptions={"vcf_file": "VCF input file"},
     parameter_descriptions={},
     output_descriptions={"output_vcf": "extracted fields from VCF file"},
     name="snpSift extractField",
-    description=("Run SnpSift extractFields on a SnpEff output."),
+    description=(
+        "Run SnpSift extractFields file.vcf CHROM, POS, REF, ALT, AF, QUAL, DP, QD, EFF on SnpEff output and expand"
+        + "EFF into separate columns."
+    ),
 )
 
 plugin.register_formats(VariantAnnotationDirFormat, VariantDirFormat)
