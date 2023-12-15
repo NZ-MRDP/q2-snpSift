@@ -1,11 +1,7 @@
-# TODO: Delete after Megan has merged her branch into main
-
 import subprocess
 
 import qiime2.plugin.model as model
 from qiime2.plugin import ValidationError
-
-# from ._type import VCFFormat
 
 
 class VariantFileFormat(model.TextFileFormat):
@@ -14,8 +10,8 @@ class VariantFileFormat(model.TextFileFormat):
     # TODO: Test validation by qiime tools import a VCF file
     def _validate_(self, *args):
         result = subprocess.run(["gatk", "ValidateVariants", "-V", str(self)])
-        # make sure field_separators are equal to "\t"
-        # if not "\t", change it to "\t"
+        # TODO: add validation_level
+        # TODO: make sure field_separators are equal to "\t" if not "\t", change it to "\t"
         if result.returncode != 0:
             raise ValidationError("This is not a valid VCF file.")
 

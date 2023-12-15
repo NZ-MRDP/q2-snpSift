@@ -1,5 +1,3 @@
-# TODO: Delete after Megan has merged her branch into main
-
 from q2_types.feature_data import FeatureData
 from qiime2.plugin import SemanticType
 

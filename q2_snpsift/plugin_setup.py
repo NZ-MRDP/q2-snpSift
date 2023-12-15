@@ -14,7 +14,7 @@ from ._type import VariantAnnotationType, VariantType
 plugin = qiime2.plugin.Plugin(
     name="snpSift",
     version="0.0.0",
-    description="QIIME 2 plugin for samtools",
+    description="QIIME 2 plugin for SnpSift",
     website="https://pcingola.github.io/SnpEff/",
     package="q2_snpsift",
 )
@@ -26,7 +26,7 @@ plugin.methods.register_function(
     outputs=[("filtered_vcf", FeatureData[VariantType])],
     input_descriptions={"input_vcf": "VCF input file"},
     parameter_descriptions={
-        "expression": "The filtering expression that specifies the conditions for selecting variants.",
+        "expression": "The filtering expression that specifies the conditions for selecting variants, e.g. '( QUAL >= 30 )'",
     },
     output_descriptions={"filtered_vcf": "The output VCF file where the filtered variants will be written."},
     name="snpSift filter qiime plugin",

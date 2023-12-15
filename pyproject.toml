@@ -1,13 +1,12 @@
 [tool.poetry]
-name = "q2-snpSift"
+name = "q2-snpsift"
 description = "Qiime2 plugin for SnpSift"
 version = "0.0.0"
-authors = ["JOLI <joli@novozymes.com> HNKO <hnko@novozymes.com>"]
+authors = ["JOLI <joli@novozymes.com>", "HNKO <hnko@novozymes.com>"]
 packages = [{include = "q2_snpsift"}]
 
 [tool.poetry.dependencies]
 python = "^3.8.1"
-# q2-gatk = {git = "https://github.com/NZ-MRDP/q2-gatk"}
 
 [tool.poetry.group.dev.dependencies]
 coverage = "^7.1.0"
@@ -31,7 +30,7 @@ build-backend = "poetry.core.masonry.api"
 
 # This doesn't seem to work, I think it is a qiime issue though
 [tool.poetry.plugins."qiime2.plugins"]
-"q2-snpSift" = "q2-snpSift=q2_snpsift.plugin_setup:plugin"
+"q2-snpsift" = "q2-snpsift=q2_snpsift.plugin_setup:plugin"
 
 [tool.black]
 line-length = 119
