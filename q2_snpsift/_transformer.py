@@ -9,18 +9,26 @@ from .plugin_setup import plugin
 
 
 def extract_fields_from_vcf(vcf_file: VariantDirFormat) -> str:
-    """extractFields.
+    """
+    extract_fields_from_vcf.
 
-    Usage: java -jar SnpSift.jar extractFields [options] file.vcf fieldName1 fieldName2 ... fieldNameN > tabFile.txt
+    Run SnpSift extractFields file.vcf CHROM, POS, REF, ALT, AF, QUAL, DP, QD, EFF on SnpEff output and expand
+    EFF into separate columns.
 
-    Options:
-        -s     : Same field separator. Default: '       '
-        -e     : Empty field. Default: ''
+    Arguments:
+        vcf_file -- VariantDirFormat
 
+    Returns:
+        str
     """
     with resources.path(bin, "SnpSift.jar") as executable_path:
-        cmd = ["java", "-jar", executable_path, "extractFields"]
-        cmd.append(os.path.abspath(os.path.join(str(vcf_file), "vcf.vcf")))
+        cmd = [
+            "java",
+            "-jar",
+            executable_path,
+            "extractFields",
+            os.path.abspath(os.path.join(str(vcf_file), "vcf.vcf")),
+        ]
         cmd.extend(["CHROM", "POS", "REF", "ALT", "AF", "QUAL", "DP", "QD", "EFF"])
         output = subprocess.run(cmd, stdout=subprocess.PIPE, text=True)
         columns = [
@@ -46,6 +54,7 @@ def extract_fields_from_vcf(vcf_file: VariantDirFormat) -> str:
             "WARNINGS",
         ]
         output_str = str(output.stdout).replace("(", "\t").replace("|", "\t").replace(")", "\t")
+
     return "\t".join(columns) + "\n" + output_str.split("\n", 1)[1]
 
 
@@ -53,6 +62,8 @@ def extract_fields_from_vcf(vcf_file: VariantDirFormat) -> str:
 def _1(ff: VariantDirFormat) -> VariantAnnotationDirFormat:
     SNPDir = VariantAnnotationDirFormat()
     df = extract_fields_from_vcf(ff)
+
     with open(os.path.join(str(SNPDir), "snp.tsv"), "w") as file:
         file.write(df)
+
     return SNPDir
