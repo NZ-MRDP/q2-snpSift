@@ -9,14 +9,9 @@ from .plugin_setup import plugin
 
 
 def extract_fields_from_vcf(vcf_file: VariantDirFormat) -> str:
-    """extractFields.
+    """extract_fields_from_vcf.
 
-    Usage: java -jar SnpSift.jar extractFields [options] file.vcf fieldName1 fieldName2 ... fieldNameN > tabFile.txt
-
-    Options:
-        -s     : Same field separator. Default: '       '
-        -e     : Empty field. Default: ''
-
+    Use SnpSift extractFields to extract fields and expand EFF columns
     """
     with resources.path(bin, "SnpSift.jar") as executable_path:
         cmd = ["java", "-jar", executable_path, "extractFields"]
