@@ -14,7 +14,7 @@ from ._type import VariantAnnotationType, VariantType
 plugin = qiime2.plugin.Plugin(
     name="snpSift",
     version="0.0.0",
-    description="QIIME 2 plugin for samtools",
+    description="QIIME 2 plugin for SnpSift",
     website="https://pcingola.github.io/SnpEff/",
     package="q2_snpsift",
 )
