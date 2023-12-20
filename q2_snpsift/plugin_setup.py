@@ -2,14 +2,11 @@
 
 import importlib
 
+import q2_snpsift
 import qiime2.plugin
 from q2_types.feature_data import FeatureData
+from q2_types_variant import VariantCall, VariantCallAnnotation
 from qiime2.plugin import Str
-
-import q2_snpsift
-
-from ._format import VariantAnnotationDirFormat, VariantDirFormat
-from ._type import VariantAnnotationType, VariantType
 
 plugin = qiime2.plugin.Plugin(
     name="snpSift",
@@ -21,9 +18,9 @@ plugin = qiime2.plugin.Plugin(
 
 plugin.methods.register_function(
     function=q2_snpsift.filter,
-    inputs={"input_vcf": FeatureData[VariantType]},
+    inputs={"input_vcf": FeatureData[VariantCall]},
     parameters={"expression": Str},
-    outputs=[("filtered_vcf", FeatureData[VariantType])],
+    outputs=[("filtered_vcf", FeatureData[VariantCall])],
     input_descriptions={"input_vcf": "VCF input file"},
     parameter_descriptions={
         "expression": "The filtering expression that specifies the conditions for selecting variants, e.g. '( QUAL >= 30 )'",
@@ -37,9 +34,9 @@ plugin.methods.register_function(
 
 plugin.methods.register_function(
     function=q2_snpsift.extract_fields_from_snpeff_output,
-    inputs={"vcf_file": FeatureData[VariantType]},
+    inputs={"vcf_file": FeatureData[VariantCall]},
     parameters={},
-    outputs=[("output_vcf", FeatureData[VariantAnnotationType])],
+    outputs=[("output_vcf", FeatureData[VariantCallAnnotation])],
     input_descriptions={"vcf_file": "VCF input file"},
     parameter_descriptions={},
     output_descriptions={"output_vcf": "extracted fields from VCF file"},
@@ -49,8 +46,3 @@ plugin.methods.register_function(
         " EFF into separate columns."
     ),
 )
-
-plugin.register_formats(VariantAnnotationDirFormat, VariantDirFormat)
-plugin.register_semantic_type_to_format(FeatureData[VariantType], artifact_format=VariantDirFormat)
-plugin.register_semantic_type_to_format(FeatureData[VariantAnnotationType], artifact_format=VariantAnnotationDirFormat)
-importlib.import_module("q2_snpsift._transformer")
