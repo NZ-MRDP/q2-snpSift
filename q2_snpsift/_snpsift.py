@@ -4,14 +4,13 @@ import subprocess
 from importlib import resources
 
 from q2_snpsift import bin
-
-from ._format import VariantAnnotationDirFormat, VariantDirFormat
+from q2_types_variant import VariantCallAnnotationDir, VariantCallDir
 
 
 def filter(
-    input_vcf: VariantDirFormat,
+    input_vcf: VariantCallDir,
     expression: str,
-) -> VariantDirFormat:
+) -> VariantCallDir:
     """
     Filter variants based on specific expression criteria.
 
@@ -22,7 +21,7 @@ def filter(
     Returns:
         VariantDirFormat
     """
-    filtered_vcf = VariantDirFormat()
+    filtered_vcf = VariantCallDir()
 
     with resources.path(bin, "SnpSift.jar") as executable_path:
         cmd = [
@@ -39,7 +38,7 @@ def filter(
     return filtered_vcf
 
 
-def extract_fields_from_snpeff_output(vcf_file: VariantAnnotationDirFormat) -> VariantAnnotationDirFormat:
+def extract_fields_from_snpeff_output(vcf_file: VariantCallAnnotationDir) -> VariantCallAnnotationDir:
     """
     Extract fields from a VCF file to a txt, tab separated format, file.
 

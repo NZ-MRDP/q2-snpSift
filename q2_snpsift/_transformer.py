@@ -3,12 +3,12 @@ import subprocess
 from importlib import resources
 
 from q2_snpsift import bin
+from q2_types_variant import VariantCallAnnotationDir, VariantCallDir
 
-from ._format import VariantAnnotationDirFormat, VariantDirFormat
 from .plugin_setup import plugin
 
 
-def extract_fields_from_vcf(vcf_file: VariantDirFormat) -> str:
+def extract_fields_from_vcf(vcf_file: VariantCallDir) -> str:
     """
     extract_fields_from_vcf.
 
@@ -16,7 +16,7 @@ def extract_fields_from_vcf(vcf_file: VariantDirFormat) -> str:
     EFF into separate columns.
 
     Arguments:
-        vcf_file -- VariantDirFormat
+        vcf_file -- VariantCallDirFormat
 
     Returns:
         str
@@ -59,11 +59,11 @@ def extract_fields_from_vcf(vcf_file: VariantDirFormat) -> str:
 
 
 @plugin.register_transformer
-def _1(ff: VariantDirFormat) -> VariantAnnotationDirFormat:
-    SNPDir = VariantAnnotationDirFormat()
+def _1(ff: VariantCallDir) -> VariantCallAnnotationDir:
+    VCADir = VariantCallAnnotationDir()
     df = extract_fields_from_vcf(ff)
 
-    with open(os.path.join(str(SNPDir), "snp.tsv"), "w") as file:
+    with open(os.path.join(str(VCADir), "snp.tsv"), "w") as file:
         file.write(df)
 
-    return SNPDir
+    return VCADir
