@@ -46,3 +46,5 @@ plugin.methods.register_function(
         " EFF into separate columns."
     ),
 )
+
+importlib.import_module("q2_snpsift._transformer")
