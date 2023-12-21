@@ -2,15 +2,18 @@
 
 import importlib
 
-import q2_snpsift
 import qiime2.plugin
 from q2_types.feature_data import FeatureData
 from q2_types_variant import VariantCall, VariantCallAnnotation
 from qiime2.plugin import Str
 
+import q2_snpsift
+
+from . import __version__
+
 plugin = qiime2.plugin.Plugin(
     name="snpSift",
-    version="0.0.0",
+    version=__version__,
     description="QIIME 2 plugin for SnpSift",
     website="https://pcingola.github.io/SnpEff/",
     package="q2_snpsift",
