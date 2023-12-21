@@ -48,5 +48,6 @@ def extract_fields_from_snpeff_output(vcf_file: VariantCallAnnotationDir) -> Var
 
     Returns:
         VariantAnnotationDirFormat
+
     """
     return vcf_file
