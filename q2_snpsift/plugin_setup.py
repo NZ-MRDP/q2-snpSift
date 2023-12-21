@@ -4,7 +4,7 @@ import importlib
 
 import qiime2.plugin
 from q2_types.feature_data import FeatureData
-from q2_types_variant import VariantCall, VariantCallAnnotation
+from q2_types_variant import VariantCall, VariantCallAnnotation, Variants
 from qiime2.plugin import Str
 
 import q2_snpsift
@@ -21,7 +21,7 @@ plugin = qiime2.plugin.Plugin(
 
 plugin.methods.register_function(
     function=q2_snpsift.filter,
-    inputs={"input_vcf": FeatureData[VariantCall]},
+    inputs={"input_vcf": FeatureData[VariantCall | Variants]},
     parameters={"expression": Str},
     outputs=[("filtered_vcf", FeatureData[VariantCall])],
     input_descriptions={"input_vcf": "VCF input file"},
