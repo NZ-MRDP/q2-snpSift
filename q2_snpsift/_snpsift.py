@@ -9,9 +9,9 @@ from q2_types_variant import (VariantCallAnnotationDir, VariantCallDir,
 
 
 def filter(
-    input_vcf: VCFIndexDirectory(),
+    input_vcf: VCFIndexDirectory,
     expression: str,
-) -> VCFIndexDirectory():
+) -> VCFIndexDirectory:
     """
     Filter variants based on specific expression criteria.
 
@@ -34,9 +34,10 @@ def filter(
                 "filter",
                 expression,
                 "-f",
-                os.path.join(str(input_vcf.path), str(path.stem) + ".vcf"),
+                os.path.join(str(input_vcf.path), str(path.stem)),
             ]
-            subprocess.run(cmd, check=True, stdout=open(os.path.join(str(filtered_vcf), os.path.basename(vcf)), "w"))
+            print(cmd)
+            subprocess.run(cmd, check=True, stdout=open(os.path.join(str(filtered_vcf.path), str(path.stem)), "w"))
 
     return filtered_vcf
 
