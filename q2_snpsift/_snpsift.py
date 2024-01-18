@@ -3,15 +3,15 @@ import os
 import subprocess
 from importlib import resources
 
-from q2_types_variant import VariantCallAnnotationDir, VariantCallDir
-
 from q2_snpsift import bin
+from q2_types_variant import (VariantCallAnnotationDir, VariantCallDir,
+                              VariantCallFile, VCFIndexDirectory)
 
 
 def filter(
-    input_vcf: VariantCallDir,
+    input_vcf: VCFIndexDirectory(),
     expression: str,
-) -> VariantCallDir:
+) -> VCFIndexDirectory():
     """
     Filter variants based on specific expression criteria.
 
@@ -22,19 +22,21 @@ def filter(
     Returns:
         VariantDirFormat
     """
-    filtered_vcf = VariantCallDir()
-
+    filtered_vcf = VCFIndexDirectory()
+    print("fun")
     with resources.path(bin, "SnpSift.jar") as executable_path:
-        cmd = [
-            "java",
-            "-jar",
-            executable_path,
-            "filter",
-            expression,
-            "-f",
-            os.path.abspath(os.path.join(str(input_vcf), "vcf.vcf")),
-        ]
-        subprocess.run(cmd, check=True, stdout=open(os.path.join(str(filtered_vcf), "vcf.vcf"), "w"))
+        for path, _ in input_vcf.vcf.iter_views(view_type=VariantCallFile):
+            print("times")
+            cmd = [
+                "java",
+                "-jar",
+                executable_path,
+                "filter",
+                expression,
+                "-f",
+                os.path.join(str(input_vcf.path), str(path.stem) + ".vcf"),
+            ]
+            subprocess.run(cmd, check=True, stdout=open(os.path.join(str(filtered_vcf), os.path.basename(vcf)), "w"))
 
     return filtered_vcf
 

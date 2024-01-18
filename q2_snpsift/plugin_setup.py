@@ -2,12 +2,11 @@
 
 import importlib
 
+import q2_snpsift
 import qiime2.plugin
 from q2_types.feature_data import FeatureData
-from q2_types_variant import VariantCall, VariantCallAnnotation, Variants
+from q2_types_variant import VariantCallAnnotation, VariantCallFile, Variants
 from qiime2.plugin import Str
-
-import q2_snpsift
 
 from . import __version__
 
@@ -21,9 +20,9 @@ plugin = qiime2.plugin.Plugin(
 
 plugin.methods.register_function(
     function=q2_snpsift.filter,
-    inputs={"input_vcf": FeatureData[VariantCall | Variants]},
+    inputs={"input_vcf": FeatureData[VariantCallFile | Variants]},
     parameters={"expression": Str},
-    outputs=[("filtered_vcf", FeatureData[VariantCall])],
+    outputs=[("filtered_vcf", FeatureData[VariantCallFile])],
     input_descriptions={"input_vcf": "VCF input file"},
     parameter_descriptions={
         "expression": "The filtering expression that specifies the conditions for selecting variants, e.g. '( QUAL >= 30 )'",
