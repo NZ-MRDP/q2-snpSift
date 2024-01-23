@@ -5,8 +5,7 @@ import importlib
 import q2_snpsift
 import qiime2.plugin
 from q2_types.feature_data import FeatureData
-from q2_types_variant import (VariantCall, VariantCallAnnotation,
-                              VariantCallFile, Variants)
+from q2_types_variant import VariantCall, VariantCallAnnotation, Variants
 from qiime2.plugin import Str
 
 from . import __version__
@@ -26,7 +25,7 @@ plugin.methods.register_function(
     outputs=[("filtered_vcf", FeatureData[VariantCall])],
     input_descriptions={"input_vcf": "VCF input file"},
     parameter_descriptions={
-        "expression": "The filtering expression that specifies the conditions for selecting variants, e.g. '( QUAL >= 30 )'",
+        "expression": "The filtering expression that specifies the conditions for selecting variants using arbitrary expressions e.g., '(QUAL > 30) | (exists INDEL) | ( countHet() > 2 )'. The actual expressions can be quite complex, so it allows for a lot of flexibility",
     },
     output_descriptions={"filtered_vcf": "The output VCF file where the filtered variants will be written."},
     name="snpSift filter qiime plugin",

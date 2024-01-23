@@ -24,11 +24,11 @@ def extract_fields_from_vcf(vcf_file: str) -> str:
     """
     with resources.path(bin, "SnpSift.jar") as executable_path:
         cmd = [
-        "java",
-        "-jar",
-        executable_path,            
-        "extractFields",
-        vcf_file,
+            "java",
+            "-jar",
+            executable_path,
+            "extractFields",
+            vcf_file,
         ]
         cmd.extend(["CHROM", "POS", "REF", "ALT", "AF", "QUAL", "DP", "QD", "EFF"])
         output = subprocess.run(cmd, stdout=subprocess.PIPE, text=True)

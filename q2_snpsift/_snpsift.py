@@ -5,7 +5,7 @@ from importlib import resources
 
 from q2_snpsift import bin
 from q2_types_variant import (VariantCallAnnotationDir, VariantCallDir,
-                              VariantCallFile, VCFIndexDirectory, VCFIndexFile)
+                              VariantCallFile, VCFIndexDirectory)
 
 
 def filter(
@@ -27,13 +27,13 @@ def filter(
     with resources.path(bin, "SnpSift.jar") as executable_path:
         for path, _ in input_vcf.vcf.iter_views(view_type=VariantCallFile):
             cmd = [
-            "java",
-            "-jar",
-            executable_path,                
-            "filter",
-            expression,
-            "-f",
-            os.path.join(str(input_vcf.path), str(path.stem) + ".vcf"),
+                "java",
+                "-jar",
+                executable_path,
+                "filter",
+                expression,
+                "-f",
+                os.path.join(str(input_vcf.path), str(path.stem) + ".vcf"),
             ]
             with open(os.path.join(str(filtered_vcf.path), str(path.stem) + ".vcf"), "w") as output_vcf_path:
                 subprocess.run(cmd, check=True, stdout=output_vcf_path)
