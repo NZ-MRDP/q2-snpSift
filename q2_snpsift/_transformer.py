@@ -3,12 +3,13 @@ import subprocess
 from importlib import resources
 
 from q2_snpsift import bin
-from q2_types_variant import VariantCallAnnotationDir, VariantCallDir
+from q2_types_variant import (VariantCallAnnotationDir, VariantCallDir,
+                              VariantCallFile)
 
 from .plugin_setup import plugin
 
 
-def extract_fields_from_vcf(vcf_file: VariantCallDir) -> str:
+def extract_fields_from_vcf(vcf_file: str) -> str:
     """
     extract_fields_from_vcf.
 
@@ -27,7 +28,7 @@ def extract_fields_from_vcf(vcf_file: VariantCallDir) -> str:
             "-jar",
             executable_path,
             "extractFields",
-            os.path.abspath(os.path.join(str(vcf_file), "vcf.vcf")),
+            vcf_file,
         ]
         cmd.extend(["CHROM", "POS", "REF", "ALT", "AF", "QUAL", "DP", "QD", "EFF"])
         output = subprocess.run(cmd, stdout=subprocess.PIPE, text=True)
@@ -61,9 +62,10 @@ def extract_fields_from_vcf(vcf_file: VariantCallDir) -> str:
 @plugin.register_transformer
 def _1(ff: VariantCallDir) -> VariantCallAnnotationDir:
     VCADir = VariantCallAnnotationDir()
-    df = extract_fields_from_vcf(ff)
+    for path, _ in ff.vcf.iter_views(view_type=VariantCallFile):
+        df = extract_fields_from_vcf(os.path.join(str(ff.path), str(path.stem) + ".vcf"))
 
-    with open(os.path.join(str(VCADir), "snp.tsv"), "w") as file:
-        file.write(df)
+        with open(os.path.join(str(VCADir), str(path.stem) + ".tsv"), "w") as file:
+            file.write(df)
 
     return VCADir
