@@ -3,8 +3,8 @@ import subprocess
 from importlib import resources
 
 from q2_snpsift import bin
-from q2_types_variant import (VariantCallAnnotationDir, VariantCallDir,
-                              VariantCallFile)
+from q2_types_variant import VariantCallAnnotationDir, VariantCallDir, VariantCallFile
+
 
 from .plugin_setup import plugin
 
