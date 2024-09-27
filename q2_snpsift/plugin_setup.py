@@ -11,7 +11,8 @@ import q2_snpsift
 
 from . import __version__
 
-T = TypeMatch(FeatureData[VariantCall | VariantCallAnnotation])
+FilterUniqueTypes = TypeMatch(FeatureData[VariantCall | VariantCallAnnotation])  # type: ignore
+
 
 plugin = qiime2.plugin.Plugin(
     name="snpSift",
@@ -30,7 +31,7 @@ plugin.methods.register_function(
     parameter_descriptions={
         "expression": "The filtering expression that specifies the conditions for selecting variants using arbitrary expressions e.g., '(QUAL > 30) | (exists INDEL) | ( countHet() > 2 )'. The actual expressions can be quite complex, so it allows for a lot of flexibility",
     },
-    output_descriptions={"filtered_vcf": "Output variant data, filtred by quality"},
+    output_descriptions={"filtered_vcf": "Output variant data, filtered by quality"},
     name="snpSift filter qiime plugin",
     description=(
         "SnpSift filter variants based on specific criteria to extract subsets of variants that meet certain conditions."
@@ -39,9 +40,9 @@ plugin.methods.register_function(
 
 plugin.methods.register_function(
     function=q2_snpsift.filter_unique,
-    inputs={"variants": T},
+    inputs={"variants": FilterUniqueTypes},
     parameters={},
-    outputs=[("filtered_variants", T)],
+    outputs=[("filtered_variants", FilterUniqueTypes)],
     input_descriptions={"variants": "Variant data"},
     parameter_descriptions={},
     output_descriptions={"filtered_variants": "Filtered variant data, containing only unique variants"},
