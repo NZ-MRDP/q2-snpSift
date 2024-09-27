@@ -64,7 +64,7 @@ def filter_unique(
     Filter variants based on specific expression criteria.
 
     Arguments:
-        variants -- VariantDirFormat
+        variants -- VariantDir
 
     Returns:
         VariantDirFormat

@@ -11,7 +11,7 @@ import q2_snpsift
 
 from . import __version__
 
-T = TypeMatch(FeatureData[VariantCall | Variants | VariantCallAnnotation])
+T = TypeMatch(FeatureData[VariantCall | VariantCallAnnotation])
 
 plugin = qiime2.plugin.Plugin(
     name="snpSift",
@@ -41,7 +41,7 @@ plugin.methods.register_function(
     function=q2_snpsift.filter_unique,
     inputs={"variants": T},
     parameters={},
-    outputs=[("filtered_variants", T)],  # type: ignore
+    outputs=[("filtered_variants", T)],
     input_descriptions={"variants": "Variant data"},
     parameter_descriptions={},
     output_descriptions={"filtered_variants": "Filtered variant data, containing only unique variants"},
