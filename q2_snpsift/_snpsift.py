@@ -3,9 +3,15 @@
 import os
 import subprocess
 from importlib import resources
-import pandas as pd
 
-from q2_types_variant import VariantCallAnnotationDir, VariantCallDir, VariantCallFile, VCFIndexDirectory, VariantDir
+import pandas as pd
+from q2_types_variant import (
+    VariantCallAnnotationDir,
+    VariantCallDir,
+    VariantCallFile,
+    VariantDir,
+    VCFIndexDirectory,
+)
 
 from q2_snpsift import bin
 
@@ -67,7 +73,7 @@ def filter_unique(
         variants -- VariantDir
 
     Returns:
-        VariantDirFormat
+        VariantDir
     """
     filtered_variants = VariantDir()
 
