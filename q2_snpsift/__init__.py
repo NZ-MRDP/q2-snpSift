@@ -1,6 +1,7 @@
 """snpSift python library."""
-from ._snpsift import extract_fields_from_snpeff_output, filter
 
-__version__ = "0.1.3"
+from ._snpsift import extract_fields_from_snpeff_output, filter_quality, filter_unique
 
-__all__ = ["filter", "extract_fields_from_snpeff_output"]
+__version__ = "0.1.4"
+
+__all__ = ["filter_quality", "extract_fields_from_snpeff_output", "filter_unique"]
