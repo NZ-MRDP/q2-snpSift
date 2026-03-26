@@ -1,28 +1,19 @@
+"""Transformers for SnpSift views and artifacts."""
+
 import os
 import subprocess
-from importlib import resources
+from importlib.resources import as_file, files
 
-from q2_snpsift import bin
 from q2_types_variant import VariantCallAnnotationDir, VariantCallDir, VariantCallFile
 
+from q2_snpsift import bin
 
 from .plugin_setup import plugin
 
 
 def extract_fields_from_vcf(vcf_file: str) -> str:
-    """
-    extract_fields_from_vcf.
-
-    Run SnpSift extractFields file.vcf CHROM, POS, REF, ALT, AF, QUAL, DP, QD, EFF on SnpEff output and expand
-    EFF into separate columns.
-
-    Arguments:
-        vcf_file -- VariantCallDirFormat
-
-    Returns:
-        str
-    """
-    with resources.path(bin, "SnpSift.jar") as executable_path:
+    """Extract a default tabular summary from a SnpEff-annotated VCF file."""
+    with as_file(files(bin).joinpath("SnpSift.jar")) as executable_path:
         cmd = [
             "java",
             "-jar",
@@ -31,7 +22,7 @@ def extract_fields_from_vcf(vcf_file: str) -> str:
             vcf_file,
         ]
         cmd.extend(["CHROM", "POS", "REF", "ALT", "AF", "QUAL", "DP", "QD", "EFF"])
-        output = subprocess.run(cmd, stdout=subprocess.PIPE, text=True)
+        output = subprocess.run(cmd, check=True, stdout=subprocess.PIPE, text=True)
         columns = [
             "CHROM",
             "POS",
@@ -65,7 +56,7 @@ def _1(ff: VariantCallDir) -> VariantCallAnnotationDir:
     for path, _ in ff.vcf.iter_views(view_type=VariantCallFile):
         df = extract_fields_from_vcf(os.path.join(str(ff.path), str(path.stem) + ".vcf"))
 
-        with open(os.path.join(str(VCADir), str(path.stem) + ".tsv"), "w") as file:
+        with open(os.path.join(str(VCADir), str(path.stem) + ".tsv"), "w", encoding="utf-8") as file:
             file.write(df)
 
     return VCADir

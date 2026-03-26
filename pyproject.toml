@@ -1,44 +1,49 @@
-[tool.poetry]
+[project]
 name = "q2-snpsift"
-description = "Qiime2 plugin for SnpSift"
-version = "0.0.0"
-authors = ["JOLI <joli@novozymes.com>", "HNKO <hnko@novozymes.com>"]
-packages = [{include = "q2_snpsift"}]
+version = "0.1.4"
+description = "QIIME 2 plugin for SnpSift"
+authors = [
+    { name = "JOLI", email = "joli@novozymes.com" },
+    { name = "HNKO", email = "hnko@novozymes.com" },
+]
+requires-python = ">=3.10"
+dependencies = [
+    "pandas>=1.5.2",
+]
 
-[tool.poetry.dependencies]
-python = "^3.8.1"
+[project.entry-points."qiime2.plugins"]
+"q2-snpsift" = "q2_snpsift.plugin_setup:plugin"
 
-[tool.poetry.group.dev.dependencies]
-coverage = "^7.1.0"
-flake8 = "^6.0.0"
-black = "^23.1.0"
-isort = "^5.12.0"
-codespell = "^2.2.2"
-flake8-docstrings = "^1.7.0"
-pytest = "^7.2.1"
-pyright = "^1.1.293"
-pytest-cov = "^4.0.0"
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-pytest-isort = "^3.1.0"
-q2-types-variant = "0.1.8"
+[tool.hatch.build.targets.wheel]
+packages = ["q2_snpsift"]
+
+[dependency-groups]
+dev = [
+    "coverage>=7.1.0",
+    "codespell>=2.2.2",
+    "pyright>=1.1.293",
+    "pytest>=7.2.1",
+    "pytest-cov>=4.0.0",
+    "ruff>=0.4.0",
+]
 
 [tool.pyright]
 exclude = ["*nox"]
 reportMissingImports = false
 
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
-
-# This doesn't seem to work, I think it is a qiime issue though
-[tool.poetry.plugins."qiime2.plugins"]
-"q2-snpsift" = "q2-snpsift=q2_snpsift.plugin_setup:plugin"
-
-[tool.black]
+[tool.ruff]
 line-length = 119
 
-[tool.isort]
-profile = "black"
+[tool.ruff.lint]
+select = ["D", "E", "F", "I", "W"]
+ignore = ["D203", "D213"]
 
-[tool.poetry-version-plugin]
-source = "init"
+[tool.ruff.lint.isort]
+known-first-party = ["q2_snpsift"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "pep257"

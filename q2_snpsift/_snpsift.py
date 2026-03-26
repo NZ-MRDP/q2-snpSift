@@ -2,14 +2,14 @@
 
 import os
 import subprocess
-from importlib import resources
+from importlib.resources import as_file, files
+from typing import Union
 
 import pandas as pd
 from q2_types_variant import (
     VariantCallAnnotationDir,
     VariantCallDir,
     VariantCallFile,
-    VariantDir,
     VCFIndexDirectory,
 )
 
@@ -17,7 +17,7 @@ from q2_snpsift import bin
 
 
 def filter_quality(
-    input_vcf: VCFIndexDirectory,
+    input_vcf: Union[VariantCallDir, VCFIndexDirectory],
     expression: str,
 ) -> VariantCallDir:
     """
@@ -32,7 +32,7 @@ def filter_quality(
     """
     filtered_vcf = VariantCallDir()
 
-    with resources.path(bin, "SnpSift.jar") as executable_path:
+    with as_file(files(bin).joinpath("SnpSift.jar")) as executable_path:
         for path, _ in input_vcf.vcf.iter_views(view_type=VariantCallFile):  # type: ignore
             cmd = [
                 "java",
@@ -43,39 +43,52 @@ def filter_quality(
                 "-f",
                 os.path.join(str(input_vcf.path), str(path.stem) + ".vcf"),
             ]
-            with open(os.path.join(str(filtered_vcf.path), str(path.stem) + ".vcf"), "w") as output_vcf_path:
+            output_path = os.path.join(str(filtered_vcf.path), str(path.stem) + ".vcf")
+            with open(output_path, "w", encoding="utf-8") as output_vcf_path:
                 subprocess.run(cmd, check=True, stdout=output_vcf_path)
 
     return filtered_vcf
 
 
-def extract_fields_from_snpeff_output(vcf_file: VariantCallAnnotationDir) -> VariantCallAnnotationDir:
-    """
-    Extract fields from a VCF file to a txt, tab separated format, file.
+def extract_fields_from_snpeff_output(
+    vcf_file: VariantCallDir,
+    fields: str = "CHROM,POS,REF,ALT,AF,QUAL,DP,ANN[*].EFFECT,ANN[*].IMPACT,ANN[*].GENE",
+) -> VariantCallAnnotationDir:
+    """Extract selected SnpEff annotation fields into a tabular artifact."""
+    output_vcf = VariantCallAnnotationDir()
+    requested_fields = [field.strip() for field in fields.split(",") if field.strip()]
 
-    Arguments:
-        vcf_file -- VariantAnnotationDirFormat
+    with as_file(files(bin).joinpath("SnpSift.jar")) as executable_path:
+        for path, _ in vcf_file.vcf.iter_views(view_type=VariantCallFile):
+            input_path = os.path.join(str(vcf_file.path), str(path.stem) + ".vcf")
+            cmd = [
+                "java",
+                "-jar",
+                executable_path,
+                "extractFields",
+                input_path,
+                *requested_fields,
+            ]
+            output_path = os.path.join(str(output_vcf.path), str(path.stem) + ".tsv")
+            with open(output_path, "w", encoding="utf-8") as output_fh:
+                subprocess.run(cmd, check=True, stdout=output_fh)
 
-    Returns:
-        VariantAnnotationDirFormat
-
-    """
-    return vcf_file
+    return output_vcf
 
 
 def filter_unique(
-    variants: VariantDir,
-) -> VariantDir:
+    variants: VariantCallAnnotationDir,
+) -> VariantCallAnnotationDir:
     """
     Filter variants based on specific expression criteria.
 
     Arguments:
-        variants -- VariantDir
+        variants -- VariantCallAnnotationDir
 
     Returns:
-        VariantDir
+        VariantCallAnnotationDir
     """
-    filtered_variants = VariantDir()
+    filtered_variants = VariantCallAnnotationDir()
 
     dfs = []
     snp_set = set()
@@ -94,5 +107,7 @@ def filter_unique(
         df = df[df["snp"].isin(snp_set)]
         df = df.drop(["snp"], axis=1)
 
-        df.to_csv(open(os.path.join(str(filtered_variants), f"{file_name}"), "w"), sep="\t")
+        output_path = os.path.join(str(filtered_variants), file_name)
+        with open(output_path, "w", encoding="utf-8") as output_fh:
+            df.to_csv(output_fh, sep="\t", index=False)
     return filtered_variants
